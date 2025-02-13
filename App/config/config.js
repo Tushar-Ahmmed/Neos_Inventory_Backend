@@ -1,6 +1,6 @@
 export const PORT = 4999
 // export const database = "mongodb+srv://tushar:123@e-commerce.nwu96.mongodb.net/E-Commerce?retryWrites=true&w=majority&appName=E-Commerce"
-export const database = "mongodb+srv://tushar:123@cluster0.a8syg.mongodb.net/NeoscoderInventory?retryWrites=true&w=majority&appName=Cluster0"
+export const database = "mongodb+srv://tushar:123@e-commerce.nwu96.mongodb.net/NeosCoderInventory?retryWrites=true&w=majority&appName=E-Commerce"
 export const WEB_CACHE = false
 export const URL_ENCODE = true
 export const MAX_JSON_SIZE = "10MB"
