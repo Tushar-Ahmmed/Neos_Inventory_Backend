@@ -2,8 +2,8 @@ import mongoose from "mongoose"
 
 const userDesSchema = mongoose.Schema(
     {
-        User_id:{type:mongoose.Schema.Types.ObjectId, required:true},
-        DC_Logon_Name:{type:String, required:true},
+        User_id:{type:mongoose.Schema.Types.ObjectId, required:true,unique:true},
+        DC_Logon_Name:{type:String, required:true, unique:true},
         _3cx:{type:String, default:null},
         Mail_Box_Type:{type:String, required:true},
         Mail_Box_Database:{type:String, required:true},
@@ -16,15 +16,14 @@ const userDesSchema = mongoose.Schema(
             enum: ["Enterprise", "Pro", "Others","Ubuntu"],
             required: true
         },
-        OS_License:{type:String, required:true},
-        Licenses:{type:Array, required:true},
-        Printer_Access:{type:Boolean, required:true},
-        Wifi_Access:{type:Boolean, required:true},
-        USB_Permission:{type:Boolean, required:true},
-        MFA_Status:{type:Boolean, required:true},
-        Join_date:{type:Date, required:true},
+        OS_License:{type:String, enum: ["KMS Activated","Microsoft 365 Premium","NA"], default:"NA"},
+        Licenses:{type:Array, default:"NA" },
+        Printer_Access:{type:Boolean, default:false},
+        Wifi_Access:{type:Boolean, default:false},
+        USB_Permission:{type:Boolean, default:false},
+        MFA_Status:{type:String, enum:["Enforced","Disabled"], default:"Disabled"},
+        Join_date:{type:Date, default:null},
         Resign_date:{type:Date, default:null}
-
     },
     {
         timestamps:true,
@@ -32,5 +31,5 @@ const userDesSchema = mongoose.Schema(
     }
 )
 
-const UserDesc = mongoose.model("User_Desc",userDesSchema)
-export default UserDesc
+const User_DescModel = mongoose.model("User_Des",userDesSchema)
+export default User_DescModel
