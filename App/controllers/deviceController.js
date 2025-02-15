@@ -1,4 +1,4 @@
-import { addDeviceService, deviceinfoService } from "../services/deviceServices.js"
+import { addDeviceService, deviceinfoService,assignDeviceService } from "../services/deviceServices.js"
 
 export const deviceinfo = async (req, res) => {
     const result =  await deviceinfoService(req)
@@ -8,5 +8,10 @@ export const deviceinfo = async (req, res) => {
 export const addDevice = async (req, res) => {
 
     const result =  await addDeviceService(req)
+    res.json(result)
+}
+
+export const assignDevice = async (req, res) => {
+    const result =  await assignDeviceService(req)
     res.json(result)
 }

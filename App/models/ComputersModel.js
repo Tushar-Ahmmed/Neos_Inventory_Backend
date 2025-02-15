@@ -19,7 +19,7 @@ const ComputerSchema = mongoose.Schema(
         Condition:{type:String, enum: ["New","Fresh","Usable"], required:true},
         Warentty_Policy:{type:String, enum: ["1 Year","1.5 Years","2 Years","3 Years"], required:true},
         purchase_date:{type:Date, default:null},
-        Assigned_To:{type:mongoose.Schema.Types.ObjectId, default:new mongoose.Types.ObjectId("67aa1b4f3de280603ec39a53")},
+        Assigned_To:{type:mongoose.Schema.Types.ObjectId, default:new mongoose.Types.ObjectId("67af3b12a55a523a84f93b73")},
 
     },
     {
