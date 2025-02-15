@@ -10,7 +10,7 @@ const router = express.Router()
 // Device Controller
 router.get("/deviceinfo/:serial", deviceinfo)
 router.post("/adddevice/", addDevice)
-router.patch("/assigndevice/:serial/:email", assignDevice)
+router.patch("/assigndevice", assignDevice)
 
 // user Controller
 router.post("/adduser/", addUser)
