@@ -4,8 +4,8 @@ const AccessoriesSchema = mongoose.Schema(
     {
         Cat_ID:{type:mongoose.Schema.Types.ObjectId, required:true},
         Brand:{type:String, required:true},
-        Model:{type:String, default:null},
-        Spec:{type:String, default:""},
+        Model:{type:String},
+        Spec:{type:String},
         Quantity:{type:Number, required:true},
     },
     {

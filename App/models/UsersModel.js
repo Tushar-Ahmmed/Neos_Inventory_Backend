@@ -3,7 +3,6 @@ import mongoose from "mongoose"
 const userSchema = mongoose.Schema(
     {
         Email:{type:String, required:true,lowercase:true},
-        otp:{type:String, default:null},
         Enroll:{type:String, required:true, unique:true},
         Full_Name:{type:String, required:true},
         Unit:{type:String, required:true},
