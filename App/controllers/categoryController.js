@@ -1,5 +1,5 @@
 
-import { createCategoryService, updateCategoryService, deleteCategoryService } from "../services/categoryServices.js"
+import { createCategoryService, updateCategoryService, deleteCategoryService,allCategoriesService } from "../services/categoryServices.js"
 
 export const createCategory = async (req, res) => {
     const result = await createCategoryService(req)
@@ -13,5 +13,10 @@ export const updateCategory = async (req, res) => {
 
 export const deleteCategory = async (req, res) => {
     const result = await deleteCategoryService(req)
+    res.json(result)
+}
+
+export const allCategories = async (req, res) => {
+    const result = await allCategoriesService(req)
     res.json(result)
 }

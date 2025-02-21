@@ -35,6 +35,13 @@ mongoose.connect(database,{autoIndex:true})
 
 app.use(router)
 
+app.use((req, res, next) => {
+    res.status(404).json({
+        success: false,
+        message: 'Route not found',
+    })
+})
+
 app.listen(PORT, ()=>{
     console.log(`server running ar http://localhost:${PORT}`)
 })

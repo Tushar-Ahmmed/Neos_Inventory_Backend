@@ -39,3 +39,15 @@ export const deleteCategoryService = async(req)=>{
         return { "status":"Error", message: error.message }
     }
 }
+
+export const allCategoriesService = async(req)=>{
+    try {
+        let result =await CategoryModel.find()
+        if(!result){
+            return { "status":"Error", message: "No Categories found" }
+        }
+        return { "status":"Success", data: result }
+    } catch (error) {
+        return { "status":"Error", message: error.message }
+    }
+}

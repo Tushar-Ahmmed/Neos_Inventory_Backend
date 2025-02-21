@@ -11,6 +11,19 @@ export const addUserService = async (req) => {
       return { "status":"Error", message: error.message }
    }
 }
+
+export const allUsersService = async (req) => {
+   try {
+        let result = await UsersModel.find()
+        if(!result){
+            return { "status":"Error", message: "No Users found" }
+        }
+        return { "status":"Success", data: result }
+    } catch (error) {
+        return { "status":"Error", message: error.message }
+    }
+}
+
 export const userinfoService = async (req) => { 
    try {
       let email = req.params.email

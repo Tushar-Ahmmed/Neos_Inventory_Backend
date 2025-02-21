@@ -100,3 +100,30 @@ export const unassignDeviceService = async (req) => {
       return { "status":"Error", message: error.message }
    }
 }
+
+export const deleteDeviceService = async (req) => {
+   let serial = req.params.serial
+   try {
+      let result = await ComputersModel.deleteOne({ Serial: serial })
+      if(result.deletedCount === 0) {
+         return { "status":"Error", message: "Device not found" }
+      }
+      return { "status":"Success", message: "Device deleted successfully" }
+   } catch (error) {
+      return { "status":"Error", message: error.message }
+   }
+}
+
+export const updateDeviceService = async (req) => {
+   let serial = req.params.serial
+   let reqBody = req.body
+   try {
+      let result = await ComputersModel.updateOne({ Serial: serial }, { $set: reqBody })
+      if(result.nModified === 0) {
+         return { "status":"Error", message: "Device not found" }
+      }
+      return { "status":"Success", message: "Device updated successfully" }
+   } catch (error) {
+      return { "status":"Error", message: error.message }
+   }
+}

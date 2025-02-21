@@ -156,3 +156,35 @@ export const unassignAccessoryService = async(req)=>{
     }
 
 }
+
+export const increaseAccessoryService = async(req)=>{
+    let id = req.params.id
+    let quantity = req.params.quantity
+    try {
+        quantity = parseInt(quantity)
+        id = new mongoose.Types.ObjectId(id)
+        const result = await AccessoriesModel.findByIdAndUpdate(id, { $inc: { Quantity: quantity } })
+        if(!result){
+            return { "status":"Error", message: "Accessory not found" }
+        }
+        return { "status":"Success", message: "Quantity increased successfully" }   
+    }catch (error) {
+        return { "status":"Error", message: error.message }
+    }
+}
+
+export const decreaseAccessoryService = async(req)=>{
+    let id = req.params.id
+    let quantity = req.params.quantity
+    try {
+        quantity = parseInt(quantity)
+        id = new mongoose.Types.ObjectId(id)
+        const result = await AccessoriesModel.findByIdAndUpdate(id, { $inc: { Quantity: -quantity } })
+        if(!result){
+            return { "status":"Error", message: "Accessory not found" }
+        }
+        return { "status":"Success", message: "Quantity decreased successfully" }   
+    }catch (error) {
+        return { "status":"Error", message: error.message }
+    }
+}

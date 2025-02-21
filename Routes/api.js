@@ -1,50 +1,71 @@
 import express from "express"
-import { addDevice, deviceinfo, assignDevice, unassignDevice} from "../App/controllers/deviceController.js"
-import { addUser, userinfo,addUserDescription,userFullInfo,updateUser,updateUserDescription, deleteUser } from "../App/controllers/userController.js"
-import { createAccessory,updateAccessory,getAllAccessories,getAccessoryById,getAccessoryByCat, deleteAccessory,assignAccessory, unassignAccessory } from "../App/controllers/accessoriesController.js"
-import { createCategory,updateCategory, deleteCategory } from "../App/controllers/categoryController.js"
+import { addDevice, deviceinfo, assignDevice, unassignDevice,updateDevice,deleteDevice} from "../App/controllers/deviceController.js"
+import { addUser, userinfo,addUserDescription,userFullInfo,updateUser,updateUserDescription, deleteUser,allUsers } from "../App/controllers/userController.js"
+import { createAccessory,updateAccessory,getAllAccessories,getAccessoryById,getAccessoryByCat, deleteAccessory,assignAccessory, unassignAccessory,increaseAccessory,decreaseAccessory } from "../App/controllers/accessoriesController.js"
+import { createCategory,updateCategory, deleteCategory,allCategories } from "../App/controllers/categoryController.js"
+import { administratorCreate,administratorDelete,updateBySuperAdmin,findAdmin,updateProfile,changePassword } from "../App/controllers/administratorController.js"
+import { tokenCreate } from "../App/controllers/tokenCreateController.js"
+import { tokenVerifyMiddleware } from "../App/middlewares/tokenVerifyMiddleware.js"
+import { superAdminVerifyMiddleware } from "../App/middlewares/superadminverifyMiddleware.js"
+
+
+
+
+
+
 
 const router = express.Router()
 
 
 // Device Controller
-router.get("/deviceinfo/:serial", deviceinfo)
-router.post("/adddevice/", addDevice)
-router.patch("/assigndevice", assignDevice)
-router.patch("/unassigndevice/:serial", unassignDevice)
+router.get("/deviceinfo/:serial", tokenVerifyMiddleware, deviceinfo)
+router.post("/adddevice/", tokenVerifyMiddleware, addDevice)
+router.patch("/assigndevice", tokenVerifyMiddleware, assignDevice)
+router.patch("/unassigndevice/:serial", tokenVerifyMiddleware, unassignDevice)
+router.patch("/updatedevice/:serial", tokenVerifyMiddleware, updateDevice)
+router.delete("/deletedevice/:serial", superAdminVerifyMiddleware, deleteDevice)
 
 
 // Accessories controller
-router.get("/allaccessories", getAllAccessories)
-router.get("/getaccessorybyid/:id", getAccessoryById)
-router.get("/getaccessorybycat/:id", getAccessoryByCat)
-router.post("/createaccessory/", createAccessory)
-router.patch("/updateaccessory/:id", updateAccessory)
-router.delete("/deleteaccessory/:id", deleteAccessory)
-router.patch("/assignaccessory/:user_id", assignAccessory)
-router.patch("/unassignaccessory/:user_id", unassignAccessory)
+router.get("/allaccessories", tokenVerifyMiddleware, getAllAccessories)
+router.get("/getaccessorybyid/:id", tokenVerifyMiddleware, getAccessoryById)
+router.get("/getaccessorybycat/:id", tokenVerifyMiddleware, getAccessoryByCat)
+router.post("/createaccessory/", tokenVerifyMiddleware,  createAccessory)
+router.patch("/updateaccessory/:id",tokenVerifyMiddleware, updateAccessory)
+router.delete("/deleteaccessory/:id",superAdminVerifyMiddleware, deleteAccessory)
+router.patch("/assignaccessory/:user_id", tokenVerifyMiddleware,  assignAccessory)
+router.patch("/unassignaccessory/:user_id", tokenVerifyMiddleware, unassignAccessory)
+router.patch("/increaseaccessory/:id/:quantity", tokenVerifyMiddleware, increaseAccessory)
+router.patch("/decreaseaccessory/:id/:quantity", superAdminVerifyMiddleware, decreaseAccessory)
 
 
 // user Controller
-router.post("/adduser/", addUser)
-router.put("/updateuser/:email", updateUser)
-router.get("/deleteuser/:email", deleteUser)
-router.post("/adduserdescription/:email", addUserDescription)
-router.put("/updateuserdescription/:email", updateUserDescription)
-router.get("/userinfo/:email", userinfo)
-router.get("/userfullinfo/:email", userFullInfo)
+router.get("/allusers/", tokenVerifyMiddleware, allUsers)
+router.post("/adduser/", tokenVerifyMiddleware, addUser)
+router.put("/updateuser/:email", tokenVerifyMiddleware, updateUser)
+router.post("/adduserdescription/:email", tokenVerifyMiddleware, addUserDescription)
+router.put("/updateuserdescription/:email",tokenVerifyMiddleware, updateUserDescription)
+router.get("/userinfo/:email", tokenVerifyMiddleware, userinfo)
+router.get("/userfullinfo/:email", tokenVerifyMiddleware, userFullInfo)
+router.delete("/deleteuser/:email",superAdminVerifyMiddleware, deleteUser)
 
 // Category Controller
-router.post("/createcategory", createCategory)
-router.put("/updatecategory/:id", updateCategory)
-router.delete("/deletecategory/:id", deleteCategory)
+router.get("/allcategories/", tokenVerifyMiddleware, allCategories)
+router.post("/createcategory/", tokenVerifyMiddleware, createCategory)
+router.put("/updatecategory/:id", tokenVerifyMiddleware, updateCategory)
+router.delete("/deletecategory/:id",superAdminVerifyMiddleware, deleteCategory)
 
 
+// Token Controller
+router.post("/login", tokenCreate)
 
+// administrator
+router.post("/createadmin", superAdminVerifyMiddleware, administratorCreate)
+router.get("/findadmin/:email", superAdminVerifyMiddleware, findAdmin)
+router.delete("/deleteadmin/:email", superAdminVerifyMiddleware, administratorDelete)
+router.put("/updatebysuperadmin/:email", superAdminVerifyMiddleware, updateBySuperAdmin)
 
-
-router.get("/",(req,res)=>{
-    res.end("Request comming successfully")
-})
+router.patch("/editprofile/", tokenVerifyMiddleware, updateProfile)
+router.patch("/changepassword/", tokenVerifyMiddleware, changePassword)
 
 export default router

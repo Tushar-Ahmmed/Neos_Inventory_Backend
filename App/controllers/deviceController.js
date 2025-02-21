@@ -1,4 +1,4 @@
-import { addDeviceService, deviceinfoService,assignDeviceService,unassignDeviceService } from "../services/deviceServices.js"
+import { addDeviceService, deviceinfoService,assignDeviceService,unassignDeviceService,updateDeviceService, deleteDeviceService } from "../services/deviceServices.js"
 
 export const deviceinfo = async (req, res) => {
     const result =  await deviceinfoService(req)
@@ -19,3 +19,12 @@ export const unassignDevice = async (req, res) => {
     const result =  await unassignDeviceService(req)
     res.json(result)
 }
+export const updateDevice = async (req, res) => {
+    const result =  await updateDeviceService(req)
+    res.json(result)
+}
+export const deleteDevice = async (req, res) => {
+    const result =  await deleteDeviceService(req)
+    res.json(result)
+}
+
