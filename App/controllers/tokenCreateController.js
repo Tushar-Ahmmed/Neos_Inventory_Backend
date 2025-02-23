@@ -23,5 +23,5 @@ export async function tokenCreate(req, res) {
     }
     // Create and send the token
     const token = jwt.sign({ email: user.email, role:user.role }, JWT_KEY, { expiresIn: "50m" })
-    res.send(token)
+    res.json({status:"success", token:token})
 }
