@@ -33,7 +33,16 @@ mongoose.connect(database,{autoIndex:true})
     
 })
 
-app.use(router)
+app.use("/api",router)
+
+app.use(express.static("../Neos_Inventory_Frontend/Client/dist"))
+
+// add react frontend Routing
+app.get("*",(req,res)=>{
+    res.sendFile("../Neos_Inventory_Frontend/Client/dist/index.html")
+})
+
+
 
 app.use((req, res, next) => {
     res.status(404).json({

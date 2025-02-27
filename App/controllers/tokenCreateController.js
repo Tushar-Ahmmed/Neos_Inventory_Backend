@@ -9,17 +9,17 @@ export async function tokenCreate(req, res) {
     const user = await AdministratorModel.findOne({ email })
 
     if (!user) {
-        return res.status(401).send({ message: "Authentication failed. User not found." })
+        return res.json({status:"error", message:"Authentication failed. User not found."})
     }
 
     if (user.role !== "admin" && user.role !== "super admin") {
-        return res.status(401).send({ message: "Authentication failed. User is not an administrator." })
+        return res.json({status:"error", message:"Authentication failed. User is not an administrator.."})
     }
 
     // Compare the provided password with the hashed password in the database
     const isMatch = await bcrypt.compare(password, user.password)
     if (!isMatch) {
-        return res.status(401).send({ message: "Authentication failed. Wrong password." })
+        return res.json({status:"error", message:"Authentication failed. Wrong password." })
     }
     // Create and send the token
     const token = jwt.sign({ email: user.email, role:user.role }, JWT_KEY, { expiresIn: "50m" })
