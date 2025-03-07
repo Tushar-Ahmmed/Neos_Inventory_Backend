@@ -33,7 +33,23 @@ mongoose.connect(database,{autoIndex:true})
     
 })
 
-app.use(router)
+app.use("/api/",router)
+
+app.use(express.static("../CLIENT/Neos_Inventory_Frontend"))
+
+// add react frontend Routing
+app.get("*",(req,res)=>{
+    res.sendFile("../CLIENT/Neos_Inventory_Frontend/dist/index.html")
+})
+
+
+
+app.use((req, res, next) => {
+    res.status(404).json({
+        success: false,
+        message: 'Route not found',
+    })
+})
 
 app.listen(PORT, ()=>{
     console.log(`server running ar http://localhost:${PORT}`)
