@@ -35,9 +35,18 @@ export const updateAccessoryService = async(req)=>{
 export const getAllAccessoriesService = async()=>{
 
     try {
-        const project = { Brand: 1, Model: 1, Spec: 1, Quantity: 1, _id: 0 }
-        const accessories = await AccessoriesModel.aggregate([{ $project: project }])
-        return { "status":"Success", accessories }
+        const projectStage = {$project:{ Brand: 1, Model: 1, Spec: 1, Quantity: 1,"Category.Title":1,_id:0}}
+        const LookupStage = {
+            $lookup: {
+              from: "accessoriescategories",       // The name of the collection to join with
+              localField: "Cat_ID", // Field from the input documents (this collection)
+              foreignField: "_id", // Field from the other collection to match
+              as: "Category"              // The name of the array to add to the documents
+            }
+          }
+          const unwindStage = { $unwind: "$Category" }
+        const data = await AccessoriesModel.aggregate([LookupStage,unwindStage,projectStage])
+        return { "status":"Success", data }
     } catch (error) {
         return { "status":"Error", message: error.message }
     }
