@@ -7,7 +7,7 @@ export const addDeviceService = async (req) => {
    try {
       let reqBody = req.body
       await ComputersModel.create(reqBody)
-      return { "tatus":"Success", message: "Device added successfully" }
+      return { "status":"Success", message: "Device added successfully" }
    } catch (error) {
       return { "status":"Error", message: error.message }
    }
@@ -69,6 +69,7 @@ export const assignDeviceService = async (req) => {
 
 export const unassignDeviceService = async (req) => {
    let serial = req.params.serial
+
    try {
       let computer = await ComputersModel.findOne({ Serial: serial })
       if(!computer) {
@@ -84,14 +85,13 @@ export const unassignDeviceService = async (req) => {
       }
       let index = user.Devices.indexOf(assign[0])
       user.Devices[index].UnAssignDate = new Date()
-      // await user.save()
      let updateUser = await UsersModel.findOneAndUpdate(
          { _id: computer.Assigned_To },
          { $set: { Devices: user.Devices } },
          { new: true }
       )
       if(!updateUser) {
-         return { "status":"Error", message: "Device not unassigned" }
+         return { "status":"Error", message: "Cannot Unassig Device" }
       }
       
       await ComputersModel.updateOne({ Serial: serial }, { $set: { Assigned_To: default_user_id } })

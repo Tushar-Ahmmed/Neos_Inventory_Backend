@@ -20,7 +20,6 @@ const router = express.Router()
 // Device Controller
 router.get("/deviceinfo/:serial", tokenVerifyMiddleware, deviceinfo)
 router.get("/alldevices/", tokenVerifyMiddleware, allDevices)
-
 router.get("/allunassigedndevices/", tokenVerifyMiddleware, allUnassignedDevices)
 router.post("/adddevice/", tokenVerifyMiddleware, addDevice)
 router.patch("/assigndevice", tokenVerifyMiddleware, assignDevice)
@@ -67,7 +66,6 @@ router.post("/createadmin", superAdminVerifyMiddleware, administratorCreate)
 router.get("/findadmin/:email", superAdminVerifyMiddleware, findAdmin)
 router.delete("/deleteadmin/:email", superAdminVerifyMiddleware, administratorDelete)
 router.put("/updatebysuperadmin/:email", superAdminVerifyMiddleware, updateBySuperAdmin)
-
 router.patch("/editprofile/", tokenVerifyMiddleware, updateProfile)
 router.patch("/changepassword/", tokenVerifyMiddleware, changePassword)
 

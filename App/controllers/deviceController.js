@@ -6,7 +6,6 @@ export const deviceinfo = async (req, res) => {
 }
 
 export const addDevice = async (req, res) => {
-
     const result =  await addDeviceService(req)
     res.json(result)
 }
