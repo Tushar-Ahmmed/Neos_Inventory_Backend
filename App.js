@@ -39,7 +39,7 @@ app.use(express.static("../CLIENT/Neos_Inventory_Frontend"))
 
 // add react frontend Routing
 app.get("*",(req,res)=>{
-    res.sendFile("../CLIENT/Neos_Inventory_Frontend/dist/index.html")
+    res.json({"status":"Error","message":"Route not found"})
 })
 
 

@@ -16,8 +16,27 @@ export const addDeviceService = async (req) => {
 export const deviceinfoService = async (req) => {
    try {
       let serial = req.params.serial
-      let result = await ComputersModel.findOne({ Serial: serial })
-      return { "status":"Success", data: result }
+      const LookupStage = {
+         $lookup: {
+            from: "users",
+            localField: "Assigned_To",
+            foreignField: "_id",
+            as: "Assigned_Person",
+         }
+      }
+
+      const MatchStage = { $match: { Serial: serial } }
+      const unwindStage = { $unwind: "$Assigned_Person" }
+
+      const ProjectStage = {
+         $project: { _id: 0, Type:1, Brand:1, Serial: 1, Brand: 1, Model: 1,Vendor:1, Processor:1,RAM:1, BUS:1,Screen:1, GHz:1, Gen:1, purchase_date:1, Warentty_Policy:1,Condition:1,Storage_Size:1, Storage_Type:1, Assigned_To: "$Assigned_Person.Email", Name: "$Assigned_Person.Full_Name", Unit: "$Assigned_Person.Unit", Designation: "$Assigned_Person.Designation" }
+      }
+
+      let result = await ComputersModel.aggregate([MatchStage, LookupStage, unwindStage, ProjectStage])
+      if(result.length === 0) {
+         return { "status":"Error", message: "Device not found" }
+      }
+      return { "status":"Success", data: result[0] }
    } catch (error) {
       return { "status":"Error", message: error.message }
    }
