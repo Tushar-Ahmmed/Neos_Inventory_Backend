@@ -2,6 +2,8 @@ import { mongoose } from "mongoose"
 import ComputersModel from "../models/ComputersModel.js"
 import UsersModel from "../models/UsersModel.js"
 import { default_user_id } from "../config/config.js"
+import { sendEmail } from "../utilities/EmailUtility.js"
+import { AssignTemplate } from "../utilities/EmailTemplate.js"
 
 export const addDeviceService = async (req) => {
    try {
@@ -75,7 +77,15 @@ export const assignDeviceService = async (req) => {
         if(!result) {
             return { "status":"Error", message: "Assign updated in device list but not updated at user list" }
          }
-        return { "status":"Success", message: "Device Assigned Successfully" }
+
+
+         const html = AssignTemplate(user.Full_Name, computer)
+         await sendEmail(email, "Device Handover", `Device with serial ${serial} has been assigned to you`, html)
+
+
+
+
+         return { "status":"Success", message: "Device Assigned Successfully" }
         }
       else{
          return { "status":"Error", message: "Device already assigned" }
@@ -123,6 +133,16 @@ export const unassignDeviceService = async (req) => {
 export const deleteDeviceService = async (req) => {
    let serial = req.params.serial
    try {
+      const device = await ComputersModel.findOne({ Serial  : serial })
+      if(device){
+         if(!device.Assigned_To.equals(default_user_id)) {
+            return { "status":"Error", message: "Device is assigned to someone, Please unassign first" }
+         }
+      }
+      else{
+         return { "status":"Error", message: "Device not found" }
+      }
+      
       let result = await ComputersModel.deleteOne({ Serial: serial })
       if(result.deletedCount === 0) {
          return { "status":"Error", message: "Device not found" }

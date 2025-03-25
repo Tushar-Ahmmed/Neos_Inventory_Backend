@@ -101,9 +101,10 @@ export const deleteAccessoryService = async(req)=>{
 
 export const assignAccessoryService = async(req)=>{
 
-    const user_id = req.params.user_id
-    let accArray = req.body.AccessoryIds
     try {
+        const user_id = req.params.user_id
+        let accArray = req.body.AccessoryIds
+
         const userId = new mongoose.Types.ObjectId(user_id)
         accArray = accArray.map((acc)=>{
             return new mongoose.Types.ObjectId(acc)
