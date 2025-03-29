@@ -35,7 +35,9 @@ router.get("/getaccessorybycat/:id", tokenVerifyMiddleware, getAccessoryByCat)
 router.post("/createaccessory/", tokenVerifyMiddleware,  createAccessory)
 router.patch("/updateaccessory/:id",tokenVerifyMiddleware, updateAccessory)
 router.delete("/deleteaccessory/:id",superAdminVerifyMiddleware, deleteAccessory)
-router.patch("/assignaccessory/:user_id", tokenVerifyMiddleware,  assignAccessory)
+
+router.patch("/assignaccessory/:user_email", tokenVerifyMiddleware,  assignAccessory)
+
 router.patch("/unassignaccessory/:user_id", tokenVerifyMiddleware, unassignAccessory)
 router.patch("/increaseaccessory/:id/:quantity", tokenVerifyMiddleware, increaseAccessory)
 router.patch("/decreaseaccessory/:id/:quantity", superAdminVerifyMiddleware, decreaseAccessory)
