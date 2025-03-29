@@ -35,7 +35,7 @@ export const updateAccessoryService = async(req)=>{
 export const getAllAccessoriesService = async()=>{
 
     try {
-        const projectStage = {$project:{ Brand: 1, Model: 1, Spec: 1, Quantity: 1,"Category.Title":1,_id:0}}
+        const projectStage = {$project:{ Brand: 1, Model: 1, Spec: 1, Quantity: 1,"Category.Title":1,_id:1}}
         const LookupStage = {
             $lookup: {
               from: "accessoriescategories",       // The name of the collection to join with
