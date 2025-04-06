@@ -35,7 +35,7 @@ export const updateAccessoryService = async(req)=>{
 export const getAllAccessoriesService = async()=>{
 
     try {
-        const projectStage = {$project:{ Brand: 1, Model: 1, Spec: 1, Quantity: 1,"Category.Title":1,_id:0}}
+        const projectStage = {$project:{ Brand: 1, Model: 1, Spec: 1, Quantity: 1,"Category.Title":1,_id:1}}
         const LookupStage = {
             $lookup: {
               from: "accessoriescategories",       // The name of the collection to join with
@@ -107,10 +107,12 @@ export const assignAccessoryService = async(req)=>{
         accArray = accArray.map((acc)=>{
             return new mongoose.Types.ObjectId(acc)
         })
-        const user = await UsersModel.find(user_email)
-        console.log(user_email)
-        console.log(accArray)
-        console.log(user)
+        const user = await UsersModel.findOne({Email:user_email})
+
+        if(!user){
+            return { "status":"Error", message: "User Not Found" }
+        }
+        
         accArray = [...user.Accessories, ...accArray]
 
         const result = await UsersModel.findByIdAndUpdate(user._id, { Accessories: accArray })
@@ -120,6 +122,7 @@ export const assignAccessoryService = async(req)=>{
         
         const accResult = await AccessoriesModel.updateMany({ _id: { $in: accArray } }, { $inc: { Quantity: -1 } })
         if(!accResult){
+            
             return { "status":"Error", message: "Cannot change in quantity" }
         }
 
