@@ -2,6 +2,10 @@ import UsersModel from '../models/UsersModel.js';
 import AccessoriesModel from './../models/AccessoriesModel.js';
 import mongoose from 'mongoose';
 
+function haveCommonAccessory(arr1, arr2) {
+    return arr2.some(str => arr1.includes(str));
+}
+
 export const createAccessoryService = async(req)=>{
 
     const accessory = req.body
@@ -102,32 +106,44 @@ export const deleteAccessoryService = async(req)=>{
 export const assignAccessoryService = async(req)=>{
 
     try {
-        const user_id = req.params.user_id
+        const user_email = req.params.user_email
         let accArray = req.body.AccessoryIds
 
-        const userId = new mongoose.Types.ObjectId(user_id)
+        const user = await UsersModel.findOne({Email:user_email})
+        if(!user){
+            return { "status":"Error", message: "User Not Found" }
+        }
+
+        if(haveCommonAccessory(user.Accessories, accArray)){
+            return { "status":"Error", message: "You are trying to assign such an item which is already assigned!!" }
+        }
+
         accArray = accArray.map((acc)=>{
             return new mongoose.Types.ObjectId(acc)
         })
-        const user = await UsersModel.findById(userId)
+
+        if(!user){
+            return { "status":"Error", message: "User Not Found" }
+        }
+        
         accArray = [...user.Accessories, ...accArray]
 
-        const accResult = await AccessoriesModel.updateMany({ _id: { $in: accArray } }, { $inc: { Quantity: -1 } })
-        if(!accResult){
-            return { "status":"Error", message: "Cannt change in quantity" }
-        }
-
-        const result = await UsersModel.findByIdAndUpdate(userId, { Accessories: accArray })
+        const result = await UsersModel.findByIdAndUpdate(user._id, { Accessories: accArray })
         if(!result){
             return { "status":"Error", message: "Cannot updated in user end" }
         }
+        
+        const accResult = await AccessoriesModel.updateMany({ _id: { $in: accArray } }, { $inc: { Quantity: -1 } })
+        if(!accResult){
+            
+            return { "status":"Error", message: "Cannot change in quantity" }
+        }
 
-        return { "status":"Success", message: "Accessory assigned successfully" }
+        return { "status":"Success", message: "Accessories assigned successfully" }
 
     } catch (error) {
         return { "status":"Error", message: error.message }
     }
-
 }
 
 export const unassignAccessoryService = async(req)=>{
