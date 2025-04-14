@@ -27,8 +27,17 @@ export const allUsersService = async (req) => {
 export const userinfoService = async (req) => { 
    try {
       let email = req.params.email
-      let result = await UsersModel.findOne({ Email: email }) 
+      let result = await UsersModel.findOne({ Email: email })
+        if(!result){
+             return { "status":"Error", message: "User not found" }
+        }
+
+       if(result.length === 0){
+         return { "status":"Error", message: "User not found" }
+        }
+
         return { "status":"Success", data: result } 
+        
    } catch (error) {    
       return { "status":"Error", message: error.message }
    }

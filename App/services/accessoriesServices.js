@@ -148,9 +148,9 @@ export const assignAccessoryService = async(req)=>{
 
 export const unassignAccessoryService = async(req)=>{
 
-    const user_id = req.params.user_id
-    let accArray = req.body.AccessoryIds
     try {
+        const user_id = req.params.user_id
+        let accArray = req.body.AccessoryIds
         const userId = new mongoose.Types.ObjectId(user_id)
         accArray = accArray.map((acc)=>{
             return new mongoose.Types.ObjectId(acc)
@@ -200,9 +200,9 @@ export const increaseAccessoryService = async(req)=>{
 }
 
 export const decreaseAccessoryService = async(req)=>{
-    let id = req.params.id
-    let quantity = req.params.quantity
     try {
+        let id = req.params.id
+        let quantity = req.params.quantity
         quantity = parseInt(quantity)
         id = new mongoose.Types.ObjectId(id)
         const result = await AccessoriesModel.findByIdAndUpdate(id, { $inc: { Quantity: -quantity } })
@@ -210,6 +210,44 @@ export const decreaseAccessoryService = async(req)=>{
             return { "status":"Error", message: "Accessory not found" }
         }
         return { "status":"Success", message: "Quantity decreased successfully" }   
+    }catch (error) {
+        return { "status":"Error", message: error.message }
+    }
+}
+export const getAccessoriesDetailsService = async(req)=>{
+    try {
+        let accessories = req.params.accessories
+        accessories = accessories.split(",")
+        if(!accessories || accessories.length === 0){
+            return { "status":"Error", message: "No accessories found" }
+        }
+        accessories = accessories.map((acc)=>{
+            return acc.trim()
+        })
+        accessories = accessories.filter((acc)=>{
+            return acc !== ""
+        })
+        accessories = accessories.map((acc)=>{
+            return new mongoose.Types.ObjectId(acc)
+        })
+        const projectStage = {$project:{ Brand: 1, Model: 1, Title:"$Category.Title", _id:1}} 
+        const LookupStage = {
+            $lookup: {
+              from: "accessoriescategories",
+              localField: "Cat_ID",
+              foreignField: "_id", 
+              as: "Category"              
+            }
+          }
+        const unwindStage = { $unwind: "$Category" }
+        const matchStage = { $match: { _id: { $in: accessories } } }
+        const data = await AccessoriesModel.aggregate([matchStage,LookupStage,unwindStage,projectStage])
+
+        if(!data){
+            return { "status":"Error", message: "Accessories not found" }
+        }
+        return { "status":"Success", data }
+
     }catch (error) {
         return { "status":"Error", message: error.message }
     }

@@ -1,4 +1,4 @@
-import { createAccessoryService,updateAccessoryService, getAllAccessoriesService,getAccessoryByIdService,getAccessoryByCatService, deleteAccessoryService,assignAccessoryService,unassignAccessoryService,increaseAccessoryService,decreaseAccessoryService } from "../services/accessoriesServices.js"
+import { createAccessoryService,updateAccessoryService, getAllAccessoriesService,getAccessoryByIdService,getAccessoryByCatService, deleteAccessoryService,assignAccessoryService,unassignAccessoryService,increaseAccessoryService,decreaseAccessoryService, getAccessoriesDetailsService } from "../services/accessoriesServices.js"
 
 export const createAccessory = async (req, res) => {
     const result = await createAccessoryService(req)
@@ -46,5 +46,9 @@ export const increaseAccessory = async (req, res) => {
 
 export const decreaseAccessory = async (req, res) => {
     const result = await decreaseAccessoryService(req)
+    res.json(result)
+}
+export const getAccessoriesDetails = async (req, res) => {
+    const result = await getAccessoriesDetailsService(req)
     res.json(result)
 }
