@@ -7,10 +7,8 @@ function haveCommonAccessory(arr1, arr2) {
 }
 
 export const createAccessoryService = async(req)=>{
-
-    const accessory = req.body
-    
     try {
+        const accessory = req.body
         accessory.Quantity = parseInt(accessory.Quantity)
         accessory.Cat_ID = new mongoose.Types.ObjectId(accessory.Cat_ID)
         await AccessoriesModel.create(accessory)
@@ -22,13 +20,22 @@ export const createAccessoryService = async(req)=>{
 }
 export const updateAccessoryService = async(req)=>{
 
-    const accessory = req.body
-    const id = new mongoose.Types.ObjectId(req.params.id)
     try {
+        const accessory = req.body
+        const id = new mongoose.Types.ObjectId(req.params.id)
+        const accessoryData = await AccessoriesModel.findById(id)
+        let oldAccessory = {
+            Brand: accessoryData.Brand,
+            Quantity: accessoryData.Quantity,
+        }
+        const isEqual = JSON.stringify(oldAccessory) === JSON.stringify(accessory)
+        if(isEqual){
+            return { "status":"Error", message: "No changes made" }
+        }
         accessory.Quantity = parseInt(accessory.Quantity)
         const updateCount = await AccessoriesModel.findByIdAndUpdate(id, accessory)
-        if(!updateCount){
-            return { "status":"Error", message: "Accessory not found" }
+        if(updateCount.modifiedCount === 0){
+            return { "status":"Error", message: "Accessory not Updated" }
         }
         return { "status":"Success", message: "Accessory updated successfully" }
     } catch (error) {
@@ -121,14 +128,11 @@ export const assignAccessoryService = async(req)=>{
         accArray = accArray.map((acc)=>{
             return new mongoose.Types.ObjectId(acc)
         })
-
-        if(!user){
-            return { "status":"Error", message: "User Not Found" }
-        }
         
         accArray = [...user.Accessories, ...accArray]
 
         const result = await UsersModel.findByIdAndUpdate(user._id, { Accessories: accArray })
+        
         if(!result){
             return { "status":"Error", message: "Cannot updated in user end" }
         }
@@ -184,11 +188,20 @@ export const unassignAccessoryService = async(req)=>{
 }
 
 export const increaseAccessoryService = async(req)=>{
-    let id = req.params.id
-    let quantity = req.params.quantity
     try {
+        let id = req.params.id
+        let quantity = req.params.quantity
         quantity = parseInt(quantity)
+        if(quantity < 0){
+            return { "status":"Error", message: "Quantity cannot be negative" }
+        }
+        if(quantity === 0){
+            return { "status":"Error", message: "Quantity cannot be zero" }
+        }
+
         id = new mongoose.Types.ObjectId(id)
+
+
         const result = await AccessoriesModel.findByIdAndUpdate(id, { $inc: { Quantity: quantity } })
         if(!result){
             return { "status":"Error", message: "Accessory not found" }
@@ -204,6 +217,20 @@ export const decreaseAccessoryService = async(req)=>{
         let id = req.params.id
         let quantity = req.params.quantity
         quantity = parseInt(quantity)
+        if(quantity < 0){
+            return { "status":"Error", message: "Quantity cannot be negative" }
+        }
+        if(quantity === 0){
+            return { "status":"Error", message: "Quantity cannot be zero" }
+        }
+
+        const accessory = await AccessoriesModel.findById(id)
+        if(accessory){
+            if(parseInt(accessory.Quantity) < quantity){
+                return { "status":"Error", message: "Decrease quantity is higher than existing" }
+            }
+        }
+
         id = new mongoose.Types.ObjectId(id)
         const result = await AccessoriesModel.findByIdAndUpdate(id, { $inc: { Quantity: -quantity } })
         if(!result){
