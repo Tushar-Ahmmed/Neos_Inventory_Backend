@@ -2,7 +2,7 @@ import mongoose from "mongoose"
 
 const userSchema = mongoose.Schema(
     {
-        Email:{type:String, required:true,lowercase:true},
+        Email:{type:String, unique:true, required:true,lowercase:true,},
         Enroll:{type:String, required:true, unique:true},
         Full_Name:{type:String, required:true},
         Unit:{type:String, required:true},

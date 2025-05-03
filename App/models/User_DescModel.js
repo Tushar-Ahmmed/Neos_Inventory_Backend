@@ -20,10 +20,11 @@ const userDesSchema = mongoose.Schema(
         Licenses:{type:Array, default:"NA" },
         Printer_Access:{type:Boolean, default:false},
         Wifi_Access:{type:Boolean, default:false},
+        VPN_Access:{type:Boolean, default:false},
         USB_Permission:{type:Boolean, default:false},
         MFA_Status:{type:String, enum:["Enforced","Disabled"], default:"Disabled"},
-        Join_date:{type:Date, default:null},
-        Resign_date:{type:Date, default:null}
+        Join_date:{type:String, default:null},
+        Resign_date:{type:String, default:null}
     },
     {
         timestamps:true,

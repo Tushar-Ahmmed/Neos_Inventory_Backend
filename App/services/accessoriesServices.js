@@ -1,6 +1,7 @@
 import UsersModel from '../models/UsersModel.js';
 import AccessoriesModel from './../models/AccessoriesModel.js';
 import mongoose from 'mongoose';
+import AccessoriesCategoriesModel from './../models/AccessoriesCategoriesModel.js';
 
 function haveCommonAccessory(arr1, arr2) {
     return arr2.some(str => arr1.includes(str));
@@ -8,9 +9,12 @@ function haveCommonAccessory(arr1, arr2) {
 
 export const createAccessoryService = async(req)=>{
     try {
-        const accessory = req.body
-        accessory.Quantity = parseInt(accessory.Quantity)
-        accessory.Cat_ID = new mongoose.Types.ObjectId(accessory.Cat_ID)
+        const accessory = req.body;
+        accessory.Quantity = parseInt(accessory.Quantity);
+        accessory.Cat_ID = new mongoose.Types.ObjectId(accessory.Cat_ID);
+        const Categoery = await AccessoriesCategoriesModel.findOne({ _id: accessory.Cat_ID });
+        accessory.Title = Categoery.Title;
+
         await AccessoriesModel.create(accessory)
         return { "status":"Success", message: "Accessory added successfully" }
     } catch (error) {
@@ -46,17 +50,17 @@ export const updateAccessoryService = async(req)=>{
 export const getAllAccessoriesService = async()=>{
 
     try {
-        const projectStage = {$project:{ Brand: 1, Model: 1, Spec: 1, Quantity: 1,"Category.Title":1, _id:1}}
+        const projectStage = {$project:{ Brand: 1, Title:1, Model: 1, Spec: 1, Quantity: 1,"Category.Title":1, _id:1}}
         const LookupStage = {
             $lookup: {
-              from: "accessoriescategories",       // The name of the collection to join with
-              localField: "Cat_ID", // Field from the input documents (this collection)
-              foreignField: "_id", // Field from the other collection to match
-              as: "Category"              // The name of the array to add to the documents
+              from: "accessoriescategories",     
+              localField: "Cat_ID", 
+              foreignField: "_id", 
+              as: "Category"
             }
           }
           const unwindStage = { $unwind: "$Category" }
-        const data = await AccessoriesModel.aggregate([LookupStage,unwindStage,projectStage])
+        const data = await AccessoriesModel.aggregate([projectStage])
         return { "status":"Success", data }
     } catch (error) {
         return { "status":"Error", message: error.message }

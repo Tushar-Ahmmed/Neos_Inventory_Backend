@@ -1,4 +1,4 @@
-import { addUserService, userinfoService, addUserDescriptionService, userFullInfoService,updateUserService,updateUserDescriptionService,deleteUserService,allUsersService } from "../services/userServices.js"
+import { addUserService, userinfoService, addUserDescriptionService, userFullInfoService,updateUserService,updateUserDescriptionService,deleteUserService,allUsersService, findUserDescriptionService } from "../services/userServices.js"
 
 
 export const addUser = async (req, res) => {
@@ -22,7 +22,7 @@ export const addUserDescription = async (req, res) => {
 
 export const userFullInfo = async (req, res) => {
     const result =  await userFullInfoService(req)
-    res.json(result.data)
+    res.json(result)
 }
 
 export const updateUser = async (req, res) => { 
@@ -37,5 +37,10 @@ export const updateUserDescription = async (req, res) => {
 
 export const deleteUser = async (req, res) => {
     const result =  await deleteUserService(req)
+    res.json(result)
+}
+
+export const findUserDescription = async (req,res) => {
+    const result = await findUserDescriptionService(req)
     res.json(result)
 }

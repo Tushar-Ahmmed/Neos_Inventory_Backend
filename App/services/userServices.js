@@ -1,4 +1,5 @@
 
+import mongoose, { mongo } from "mongoose";
 import UsersModel from "../models/UsersModel.js"
 import User_DescModel from './../models/User_DescModel.js';
 
@@ -68,8 +69,62 @@ export const userFullInfoService = async (req) => {
             as: "User_Des"
          }
       }
+
+      let AccessoriesLookupStage = {
+         $lookup: {
+            from: "accessories",
+            localField: "Accessories",
+            foreignField: "_id",
+            as: "Accessories"
+            }
+        }
+
+
       let UnwindStage = { $unwind: "$User_Des" } 
-      let userinfo = await UsersModel.aggregate([EmailMatchStage,LookupStage,UnwindStage])
+      let ProjectStage = {
+         $project: {
+            _id: 0,
+            Email: 1,
+            Enroll:1,
+            Phone:1,
+            Full_Name: 1,
+            Unit: 1,
+            Department: 1,
+            Designation: 1,
+            Phone_Number: 1,
+            Accessories: 1,
+            Devices: 1,
+            User_Des: {
+               DC_Logon_Name: "$User_Des.DC_Logon_Name",
+               _3cx: "$User_Des._3cx",
+               Mail_Box_Type: "$User_Des.Mail_Box_Type",
+               Mail_Box_Database: "$User_Des.Mail_Box_Database",
+               Office: "$User_Des.Office",
+               Country: "$User_Des.Country",
+               Reports_To: "$User_Des.Reports_To",
+               OS_Type: "$User_Des.OS_Type",
+               OS_Family: "$User_Des.OS_Family",
+               OS_License: "$User_Des.OS_License",
+               Licenses: "$User_Des.Licenses",
+               Printer_Access: "$User_Des.Printer_Access",
+               Wifi_Access: "$User_Des.Wifi_Access",
+               VPN_Access: "$User_Des.VPN_Access",
+               USB_Permission: "$User_Des.USB_Permission",
+               MFA_Status: "$User_Des.MFA_Status",
+               Join_date: "$User_Des.Join_date",
+               Resign_date: "$User_Des.Resign_date"
+            },
+
+         }
+      }
+      let userinfo = await UsersModel.aggregate([EmailMatchStage,LookupStage,UnwindStage,AccessoriesLookupStage, ProjectStage,])
+
+        if(!userinfo){
+            return { "status":"Error", message: "User not found" }
+        }
+        if(userinfo.length === 0){
+            return { "status":"Failed", message: "User Description not found" }
+        }
         return { "status":"Success", data: userinfo }
    }
     catch (error) {
@@ -118,4 +173,19 @@ export const deleteUserService = async (req) => {
     } catch (error) {
         return { "status":"Error", message: error.message }
     }
+}
+
+export const findUserDescriptionService = async (req) => {
+    try {
+        let userId = req.params.userId
+        userId = new mongoose.Types.ObjectId(userId)
+        let userinfo = await User_DescModel.findOne({ User_id: userId })
+   
+        if(!userinfo){
+            return { "status":"Error", message: "Description not found" }
+        }
+        return { "status":"Success", data: userinfo }
+    } catch (error) {
+        return { "status":"Error", message: error.message }
+    }   
 }

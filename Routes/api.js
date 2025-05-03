@@ -1,6 +1,6 @@
 import express from "express"
 import { addDevice, deviceinfo, assignDevice, unassignDevice,updateDevice,deleteDevice,allDevices,allUnassignedDevices} from "../App/controllers/deviceController.js"
-import { addUser, userinfo,addUserDescription,userFullInfo,updateUser,updateUserDescription, deleteUser,allUsers } from "../App/controllers/userController.js"
+import { addUser, userinfo,addUserDescription,userFullInfo,updateUser,updateUserDescription, deleteUser,allUsers,findUserDescription } from "../App/controllers/userController.js"
 import { createAccessory,updateAccessory,getAllAccessories,getAccessoryById,getAccessoryByCat, deleteAccessory,assignAccessory, unassignAccessory,increaseAccessory,decreaseAccessory, getAccessoriesDetails } from "../App/controllers/accessoriesController.js"
 import { createCategory,updateCategory, deleteCategory,allCategories } from "../App/controllers/categoryController.js"
 import { administratorCreate,administratorDelete,updateBySuperAdmin,findAdmin,updateProfile,changePassword } from "../App/controllers/administratorController.js"
@@ -51,6 +51,7 @@ router.put("/updateuser/:email", tokenVerifyMiddleware, updateUser)
 router.post("/adduserdescription/:email", tokenVerifyMiddleware, addUserDescription)
 router.put("/updateuserdescription/:email",tokenVerifyMiddleware, updateUserDescription)
 router.get("/userinfo/:email", tokenVerifyMiddleware, userinfo)
+router.get("/finduserdescription/:userId", tokenVerifyMiddleware, findUserDescription)
 router.get("/userfullinfo/:email", tokenVerifyMiddleware, userFullInfo)
 router.delete("/deleteuser/:email",superAdminVerifyMiddleware, deleteUser)
 

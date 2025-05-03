@@ -67,7 +67,7 @@ export const assignDeviceService = async (req) => {
          if(assign_date === undefined || assign_date === null || assign_date === "")  {
             assign_date = new Date()
          }
-         let assign = { Device_id: computer._id, AssignDate: assign_date, UnAssignDate: null }
+         let assign = { Device_id: computer._id, Serial:computer.Serial, AssignDate: assign_date, UnAssignDate: null }
          let result = await UsersModel.findOneAndUpdate(
             { Email: email },
             { $push: { Devices: assign } },
@@ -97,9 +97,9 @@ export const assignDeviceService = async (req) => {
 }
 
 export const unassignDeviceService = async (req) => {
-   let serial = req.params.serial
-
+   
    try {
+      let serial = req.params.serial
       let computer = await ComputersModel.findOne({ Serial: serial })
       if(!computer) {
          return { "status":"Error", message: "Device not found" }
@@ -108,7 +108,7 @@ export const unassignDeviceService = async (req) => {
       if(!user) {
          return { "status":"Error", message: "User not found" }
       }
-      let assign = user.Devices.filter((device) => device.Device_id.equals(computer._id))
+      let assign = user.Devices.filter((device) => (device.Device_id.equals(computer._id) && device.UnAssignDate === null))
       if(assign.length === 0) {
          return { "status":"Error", message: "Device not assigned" }
       }

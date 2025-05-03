@@ -3,6 +3,7 @@ import mongoose from "mongoose"
 const AccessoriesSchema = mongoose.Schema(
     {
         Cat_ID:{type:mongoose.Schema.Types.ObjectId, required:true},
+        Title:{type:String, required:true},
         Brand:{type:String, required:true},
         Model:{type:String},
         Spec:{type:String},
