@@ -3,7 +3,7 @@ import { addDevice, deviceinfo, assignDevice, unassignDevice,updateDevice,delete
 import { addUser, userinfo,addUserDescription,userFullInfo,updateUser,updateUserDescription, deleteUser,allUsers,findUserDescription } from "../App/controllers/userController.js"
 import { createAccessory,updateAccessory,getAllAccessories,getAccessoryById,getAccessoryByCat, deleteAccessory,assignAccessory, unassignAccessory,increaseAccessory,decreaseAccessory, getAccessoriesDetails } from "../App/controllers/accessoriesController.js"
 import { createCategory,updateCategory, deleteCategory,allCategories } from "../App/controllers/categoryController.js"
-import { administratorCreate,administratorDelete,updateBySuperAdmin,findAdmin,updateProfile,changePassword } from "../App/controllers/administratorController.js"
+import { administratorCreate,administratorDelete,updateBySuperAdmin,findAdmin,updateProfile,changePassword,getAdminEmail,getAllAdmins } from "../App/controllers/administratorController.js"
 import { tokenCreate } from "../App/controllers/tokenCreateController.js"
 import { tokenVerifyMiddleware } from "../App/middlewares/tokenVerifyMiddleware.js"
 import { superAdminVerifyMiddleware } from "../App/middlewares/superadminverifyMiddleware.js"
@@ -72,5 +72,7 @@ router.delete("/deleteadmin/:email", superAdminVerifyMiddleware, administratorDe
 router.put("/updatebysuperadmin/:email", superAdminVerifyMiddleware, updateBySuperAdmin)
 router.patch("/editprofile/", tokenVerifyMiddleware, updateProfile)
 router.patch("/changepassword/", tokenVerifyMiddleware, changePassword)
+router.get("/getadminemail",tokenVerifyMiddleware, getAdminEmail)
+router.get("/alladmins",tokenVerifyMiddleware, getAllAdmins)
 
 export default router

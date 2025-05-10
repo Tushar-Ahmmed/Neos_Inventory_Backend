@@ -171,3 +171,29 @@ export const changePasswordService = async (req) => {
         }
     }
 }
+
+export const getAllAdminsService = async (req) => {
+    try {
+        
+        const Users = await AdministratorModel.find({})
+
+        if (!Users) {
+            return {status: "Error", message: "No user was Found" }
+        }  
+        return {
+            status: "Success",
+            data: Users
+        }
+    }
+    catch (error) {
+        return {
+            status: "Error",
+            message: error.message
+        }
+    }
+}
+
+
+export const getAdminEmailService = async(req)=>{
+    return req.user.email
+}

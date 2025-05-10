@@ -1,4 +1,4 @@
-import { createAdministratorService,deleteAdministratorService,updateBySuperAdminService,findAdminService,updateProfileService,changePasswordService } from '../services/administratorServices.js'
+import { createAdministratorService,deleteAdministratorService,updateBySuperAdminService,findAdminService,updateProfileService,changePasswordService, getAdminEmailService,getAllAdminsService } from '../services/administratorServices.js'
 
 export const administratorCreate = async (req, res) => {
     const result = await createAdministratorService(req)
@@ -27,5 +27,13 @@ export const updateProfile = async (req, res) => {
 
 export const changePassword = async (req, res) => {
     const result = await changePasswordService(req)
+    res.json(result)
+}
+export const getAdminEmail = async (req, res) => {
+    const result = await getAdminEmailService(req)
+    res.json(result)
+}
+export const getAllAdmins = async (req, res) => {
+    const result = await getAllAdminsService(req)
     res.json(result)
 }
