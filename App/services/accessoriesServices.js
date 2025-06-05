@@ -132,16 +132,26 @@ export const assignAccessoryService = async(req)=>{
         accArray = accArray.map((acc)=>{
             return new mongoose.Types.ObjectId(acc)
         })
-        
-        accArray = [...user.Accessories, ...accArray]
 
+        // prottekta id ekhon object id te convert hoye geche. ekhon ei id gulor diye object create kora lagbe jekhane accessory id and assign date thakbe
+        const accObjects = accArray.map((acc)=>{
+            return {
+                accId: acc,
+                Assign_Date: new Date()
+            }
+        })
+        accArray = [...user.Accessories, ...accObjects]
         const result = await UsersModel.findByIdAndUpdate(user._id, { Accessories: accArray })
         
         if(!result){
             return { "status":"Error", message: "Cannot updated in user end" }
         }
+        const newAccIds = accObjects.map((acc)=>{
+            return acc.accId
+        })
         
-        const accResult = await AccessoriesModel.updateMany({ _id: { $in: accArray } }, { $inc: { Quantity: -1 } })
+        const accResult = await AccessoriesModel.updateMany({ _id: { $in: newAccIds } }, { $inc: { Quantity: -1 } })
+
         if(!accResult){
             
             return { "status":"Error", message: "Cannot change in quantity" }

@@ -73,7 +73,7 @@ export const userFullInfoService = async (req) => {
       let AccessoriesLookupStage = {
          $lookup: {
             from: "accessories",
-            localField: "Accessories",
+            localField: "Accessories.accId",
             foreignField: "_id",
             as: "Accessories"
             }

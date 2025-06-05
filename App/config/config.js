@@ -1,8 +1,8 @@
 import mongoose, { mongo } from "mongoose"
 
 export const PORT = 4999
-// export const database = "mongodb+srv://tushar:123@e-commerce.nwu96.mongodb.net/E-Commerce?retryWrites=true&w=majority&appName=E-Commerce"
-export const database = "mongodb+srv://tushar:123@e-commerce.nwu96.mongodb.net/NeosCoderInventory?retryWrites=true&w=majority&appName=E-Commerce"
+export const database = "mongodb://localhost:27017/NeosCoderInventory"
+// export const database = "mongodb+srv://tushar:123@e-commerce.nwu96.mongodb.net/NeosCoderInventory?retryWrites=true&w=majority&appName=E-Commerce"
 export const WEB_CACHE = false
 export const URL_ENCODE = true
 export const MAX_JSON_SIZE = "10MB"
